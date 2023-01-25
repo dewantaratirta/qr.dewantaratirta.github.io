@@ -1,0 +1,21 @@
+{
+	"extends": "./.svelte-kit/tsconfig.json",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": false,
+		"forceConsistentCasingInFileNames": false,
+		"resolveJsonModule": true,
+		"skipLibCheck": false,
+		"sourceMap": false,
+		"strict": false,
+		"baseUrl": ".",
+		"paths": {
+			"$lib":["./src/lib"],
+			"$lib/*":["./src/lib/*"],
+			"$layout/*": ["./src/lib/layout/*" ],
+			"$components/*": ["./src/lib/components/*" ],
+			"$portfolio/*": ["./src/lib/portfolio/*" ],
+		}
+	},
+}
