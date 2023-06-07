@@ -14,19 +14,19 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     dotRound: 0
   };
   $$result.css.add(css);
-  return `<div class="${"container svelte-1o4uv6x"}"><div><h1>QRCode Generator</h1>
-    <form><div class="${"grid"}"><label for="${"firstname"}">Input your text
-          <input type="${"text"}" placeholder="${"Type text/url here..."}"${add_attribute("value", text, 0)}></label></div>
-      <button type="${"submit"}">Generate</button></form>
+  return `<div class="container svelte-1o4uv6x"><div><h1>QRCode Generator</h1>
+    <form><div class="grid"><label for="firstname">Input your text
+          <input type="text" placeholder="Type text/url here..."${add_attribute("value", text, 0)}></label></div>
+      <button type="submit">Generate</button></form>
 
-    <details><summary id="${"summary"}">Advance Settings</summary>
-      <div><div class="${"grid"}"><label for="${"color"}">Color
-            <input type="${"color"}" id="${"color"}" name="${"color"}"${add_attribute("value", opts.colorDark, 0)}></label>
+    <details><summary id="summary">Advance Settings</summary>
+      <div><div class="grid"><label for="color">Color
+            <input type="color" id="color" name="color"${add_attribute("value", opts.colorDark, 0)}></label>
 
-          <label for="${"range"}">Dot Scale ${escape(opts.dotScale / 10)}
-            <input type="${"range"}" min="${"4"}" max="${"10"}" id="${"range"}" name="${"range"}"${add_attribute("value", opts.dotScale, 0)}></label></div>
+          <label for="range">Dot Scale ${escape(opts.dotScale / 10)}
+            <input type="range" min="4" max="10" id="range" name="range"${add_attribute("value", opts.dotScale, 0)}></label></div>
 
-        <div class="${"grid"}">
+        <div class="grid">
           </div></div></details>
 
     <div>${``}</div></div>

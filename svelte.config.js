@@ -13,12 +13,15 @@ const config = {
     csrf: {
       checkOrigin: false
     },
+    paths:{
+      base: '/qr.dewantaratirta.github.io',
+    }
   },
   extensions: ['.svelte'],
   preprocess: [
     preprocess({
     }),
-  ]
+  ],
 };
 
 export default config;

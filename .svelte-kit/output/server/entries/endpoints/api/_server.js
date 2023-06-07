@@ -1848,7 +1848,11 @@ GIFEncoder.prototype.writeGraphicCtrlExt = function() {
   }
   disp <<= 2;
   this.out.writeByte(
-    0 | disp | 0 | transp
+    0 | // 1:3 reserved
+    disp | // 4:6 disposal
+    0 | // 7 user input - 0 = none
+    transp
+    // 8 transparency flag
   );
   this.writeShort(this.delay);
   this.out.writeByte(this.transIndex);
@@ -1864,7 +1868,12 @@ GIFEncoder.prototype.writeImageDesc = function() {
     this.out.writeByte(0);
   } else {
     this.out.writeByte(
-      128 | 0 | 0 | 0 | this.palSize
+      128 | // 1 local color table 1=yes
+      0 | // 2 interlace - 0=no
+      0 | // 3 sorted - 0=no
+      0 | // 4-5 reserved
+      this.palSize
+      // 6-8 size of color table
     );
   }
 };
@@ -1872,7 +1881,11 @@ GIFEncoder.prototype.writeLSD = function() {
   this.writeShort(this.width);
   this.writeShort(this.height);
   this.out.writeByte(
-    128 | 112 | 0 | this.palSize
+    128 | // 1 : global color table flag = 1 (gct used)
+    112 | // 2-4 : color resolution = 7
+    0 | // 5 : gct sort flag = 0
+    this.palSize
+    // 6-8 : gct size
   );
   this.out.writeByte(0);
   this.out.writeByte(0);
@@ -2044,8 +2057,7 @@ const _AwesomeQR = class {
     canvasContext.fillStyle = oldFillStyle;
   }
   async _draw() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s;
-    const nCount = (_a = this.qrCode) == null ? void 0 : _a.moduleCount;
+    const nCount = this.qrCode?.moduleCount;
     const rawSize = this.options.size;
     let rawMargin = this.options.margin;
     if (rawMargin < 0 || rawMargin * 2 >= rawSize) {
@@ -2116,7 +2128,7 @@ const _AwesomeQR = class {
       backgroundCanvasContext.fill();
     }
     const alignmentPatternCenters = QRUtil.getPatternPosition(this.qrCode.typeNumber);
-    const dataScale = ((_c = (_b = this.options.components) == null ? void 0 : _b.data) == null ? void 0 : _c.scale) || defaultScale;
+    const dataScale = this.options.components?.data?.scale || defaultScale;
     const dataXyOffset = (1 - dataScale) * 0.5;
     for (let row = 0; row < nCount; row++) {
       for (let col = 0; col < nCount; col++) {
@@ -2160,14 +2172,14 @@ const _AwesomeQR = class {
     mainCanvasContext.fillRect(0, 0, 8 * nSize, 8 * nSize);
     mainCanvasContext.fillRect(0, (nCount - 8) * nSize, 8 * nSize, 8 * nSize);
     mainCanvasContext.fillRect((nCount - 8) * nSize, 0, 8 * nSize, 8 * nSize);
-    if ((_e = (_d = this.options.components) == null ? void 0 : _d.timing) == null ? void 0 : _e.protectors) {
+    if (this.options.components?.timing?.protectors) {
       mainCanvasContext.fillRect(8 * nSize, 6 * nSize, (nCount - 8 - 8) * nSize, nSize);
       mainCanvasContext.fillRect(6 * nSize, 8 * nSize, nSize, (nCount - 8 - 8) * nSize);
     }
-    if ((_g = (_f = this.options.components) == null ? void 0 : _f.cornerAlignment) == null ? void 0 : _g.protectors) {
+    if (this.options.components?.cornerAlignment?.protectors) {
       _AwesomeQR._drawAlignProtector(mainCanvasContext, cornerAlignmentCenter, cornerAlignmentCenter, nSize);
     }
-    if ((_i = (_h = this.options.components) == null ? void 0 : _h.alignment) == null ? void 0 : _i.protectors) {
+    if (this.options.components?.alignment?.protectors) {
       for (let i = 0; i < alignmentPatternCenters.length; i++) {
         for (let j = 0; j < alignmentPatternCenters.length; j++) {
           const agnX = alignmentPatternCenters[j];
@@ -2200,13 +2212,13 @@ const _AwesomeQR = class {
     mainCanvasContext.fillRect(2 * nSize, 2 * nSize, 3 * nSize, 3 * nSize);
     mainCanvasContext.fillRect((nCount - 7 + 2) * nSize, 2 * nSize, 3 * nSize, 3 * nSize);
     mainCanvasContext.fillRect(2 * nSize, (nCount - 7 + 2) * nSize, 3 * nSize, 3 * nSize);
-    const timingScale = ((_k = (_j = this.options.components) == null ? void 0 : _j.timing) == null ? void 0 : _k.scale) || defaultScale;
+    const timingScale = this.options.components?.timing?.scale || defaultScale;
     const timingXyOffset = (1 - timingScale) * 0.5;
     for (let i = 0; i < nCount - 8; i += 2) {
       _AwesomeQR._drawDot(mainCanvasContext, 8 + i, 6, nSize, timingXyOffset, timingScale);
       _AwesomeQR._drawDot(mainCanvasContext, 6, 8 + i, nSize, timingXyOffset, timingScale);
     }
-    const cornerAlignmentScale = ((_m = (_l = this.options.components) == null ? void 0 : _l.cornerAlignment) == null ? void 0 : _m.scale) || defaultScale;
+    const cornerAlignmentScale = this.options.components?.cornerAlignment?.scale || defaultScale;
     const cornerAlignmentXyOffset = (1 - cornerAlignmentScale) * 0.5;
     _AwesomeQR._drawAlign(
       mainCanvasContext,
@@ -2216,9 +2228,9 @@ const _AwesomeQR = class {
       cornerAlignmentXyOffset,
       cornerAlignmentScale,
       this.options.colorDark,
-      ((_o = (_n = this.options.components) == null ? void 0 : _n.cornerAlignment) == null ? void 0 : _o.protectors) || false
+      this.options.components?.cornerAlignment?.protectors || false
     );
-    const alignmentScale = ((_q = (_p = this.options.components) == null ? void 0 : _p.alignment) == null ? void 0 : _q.scale) || defaultScale;
+    const alignmentScale = this.options.components?.alignment?.scale || defaultScale;
     const alignmentXyOffset = (1 - alignmentScale) * 0.5;
     for (let i = 0; i < alignmentPatternCenters.length; i++) {
       for (let j = 0; j < alignmentPatternCenters.length; j++) {
@@ -2239,7 +2251,7 @@ const _AwesomeQR = class {
             alignmentXyOffset,
             alignmentScale,
             this.options.colorDark,
-            ((_s = (_r = this.options.components) == null ? void 0 : _r.alignment) == null ? void 0 : _s.protectors) || false
+            this.options.components?.alignment?.protectors || false
           );
         }
       }
@@ -2415,10 +2427,25 @@ async function GET(params) {
 }
 const baseConfig = {
   text: "Hello world",
+  // size: 400,
+  // margin: 20,
+  // colorDark: "#181818",
+  // colorLight: "#ffffff",
+  // autoColor: false,
+  // backgroundImage: undefined,
   whiteMargin: false,
+  // logoImage: 'https://crosssync.app/assets/favicon/apple-touch-icon.png',
+  // logoScale: 0.2,
+  // logoMargin: 6,
+  // logoCornerRadius: 0,
   dotScale: 0.4,
   dotRound: [100, 100, 100, 100],
-  componentOptions: {}
+  componentOptions: {
+    // cornerAlignment:{
+    //   scale: 0,
+    //   protectors: true
+    // }
+  }
 };
 async function POST(ev) {
   const data = await ev.request.json();
