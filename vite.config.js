@@ -4,6 +4,7 @@ import path from "path";
 /** @type {import('vite').UserConfig} */
 const config = {
   plugins: [sveltekit()],
+  base: "https://dewantaratirta.github.io/qr.dewantaratirta.github.io/",
   resolve: {
     alias: {
       $layout: path.resolve("./src/lib/layout"),

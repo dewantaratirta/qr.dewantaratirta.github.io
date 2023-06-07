@@ -458,7 +458,7 @@ export class AwesomeQR {
     });
     AwesomeQR._drawDot(canvasContext, centerX, centerY, nSize, xyOffset, dotScale);
     if (!hasProtector) {
-      canvasContext.fillStyle = "rgba(255, 255, 255, 0.6)";
+      canvasContext.fillStyle = "rgba(255, 255, 255, 0)";
       new Array(2).fill(0).map((_, i) => {
         AwesomeQR._drawDot(canvasContext, centerX - 1 + i, centerY - 1, nSize, xyOffset, dotScale);
         AwesomeQR._drawDot(canvasContext, centerX + 1, centerY - 1 + i, nSize, xyOffset, dotScale);
@@ -606,7 +606,7 @@ export class AwesomeQR {
     const cornerAlignmentCenter = alignmentPatternCenters[alignmentPatternCenters.length - 1];
 
     // - PROTECTORS
-    const protectorStyle = "rgba(255, 255, 255, 0.6)";
+    const protectorStyle = "rgba(255, 255, 255, 0)";
 
     // - FINDER PROTECTORS
     mainCanvasContext.fillStyle = protectorStyle;

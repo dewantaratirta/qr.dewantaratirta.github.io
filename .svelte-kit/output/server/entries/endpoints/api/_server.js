@@ -2033,7 +2033,7 @@ const _AwesomeQR = class {
     });
     _AwesomeQR._drawDot(canvasContext, centerX, centerY, nSize, xyOffset, dotScale);
     if (!hasProtector) {
-      canvasContext.fillStyle = "rgba(255, 255, 255, 0.6)";
+      canvasContext.fillStyle = "rgba(255, 255, 255, 0)";
       new Array(2).fill(0).map((_, i) => {
         _AwesomeQR._drawDot(canvasContext, centerX - 1 + i, centerY - 1, nSize, xyOffset, dotScale);
         _AwesomeQR._drawDot(canvasContext, centerX + 1, centerY - 1 + i, nSize, xyOffset, dotScale);
@@ -2155,7 +2155,7 @@ const _AwesomeQR = class {
       }
     }
     const cornerAlignmentCenter = alignmentPatternCenters[alignmentPatternCenters.length - 1];
-    const protectorStyle = "rgba(255, 255, 255, 0.6)";
+    const protectorStyle = "rgba(255, 255, 255, 0)";
     mainCanvasContext.fillStyle = protectorStyle;
     mainCanvasContext.fillRect(0, 0, 8 * nSize, 8 * nSize);
     mainCanvasContext.fillRect(0, (nCount - 8) * nSize, 8 * nSize, 8 * nSize);
@@ -2415,34 +2415,20 @@ async function GET(params) {
 }
 const baseConfig = {
   text: "Hello world",
-  size: 400,
-  margin: 20,
-  colorDark: "#181818",
-  colorLight: "#ffffff",
-  autoColor: true,
-  backgroundImage: void 0,
-  whiteMargin: true,
-  logoImage: "https://crosssync.app/assets/favicon/apple-touch-icon.png",
-  logoScale: 0.2,
-  logoMargin: 6,
-  logoCornerRadius: 8,
-  dotScale: 0.4
+  whiteMargin: false,
+  dotScale: 0.4,
+  dotRound: [100, 100, 100, 100],
+  componentOptions: {}
 };
 async function POST(ev) {
-  if (ev.request.headers.get("content-type").startsWith("application/x-www-form-urlencoded")) {
-    const formData = await ev.request.formData();
-    let data = {};
-    for (const pair of formData.entries()) {
-      data[pair[0]] = pair[1];
-    }
-    let QrData = { ...baseConfig, ...data };
-    console.log(QrData);
-    const buffer = await new AwesomeQR(QrData).draw();
-    let resp = new Response(
-      buffer
-    );
-    return resp;
-  }
+  const data = await ev.request.json();
+  let options = {
+    ...baseConfig,
+    ...data
+  };
+  const buffer = await new AwesomeQR(options).draw();
+  const resp = new Response(buffer);
+  return resp;
 }
 export {
   GET,
